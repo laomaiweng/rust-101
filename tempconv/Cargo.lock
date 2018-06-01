@@ -1,4 +1,4 @@
 [[package]]
-name = "celsius2fahrenheit"
+name = "tempconv"
 version = "0.1.0"
 

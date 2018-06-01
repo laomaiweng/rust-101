@@ -1,5 +1,5 @@
 [package]
-name = "fahrenheit2celsius"
+name = "tempconv"
 version = "0.1.0"
 authors = ["quentin <quentin@minster.io>"]
 
