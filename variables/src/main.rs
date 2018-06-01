@@ -3,7 +3,7 @@ fn main() {
     let b = b'\x20';
     let s = "😻";
 
-    println!("{}{}", b, s);
+    println!("{}{} {}", b, s, s.len());
 
     let mut t: (u128, &str, bool, f32) = (x, "foo", true, 3.14);
     let t0 = t.0;
