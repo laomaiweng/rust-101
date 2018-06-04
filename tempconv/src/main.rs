@@ -8,7 +8,7 @@ const K2C_OFFSET: f64 = -273.15;
 fn main() {
     println!("===== Temperature converter =====");
     println!("=                               =");
-    println!("= Choose you conversion:        =");
+    println!("= Choose a conversion:          =");
     println!("= 1) °F -> °C                   =");
     println!("= 2) °C -> °F                   =");
     println!("= 3) °K -> °C                   =");
