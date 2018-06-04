@@ -1,0 +1,1 @@
+* use netlink library bindings instead of `ip route get` (look for RTM_GETROUTE)
