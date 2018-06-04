@@ -1,3 +1,5 @@
+#![feature(ip_constructors)]
+
 extern crate regex;
 
 use std::env;
@@ -25,12 +27,12 @@ struct Route {
 }
 
 impl Route {
-    fn default() -> Route {
+    fn unspecified() -> Route {
         Route {
             local: false,
-            dst: net::IpAddr::from([127, 0, 0, 1]),
-            src: net::IpAddr::from([127, 0, 0, 1]),
-            device: String::from("lo")
+            dst: net::IpAddr::V4(net::Ipv4Addr::unspecified()),
+            src: net::IpAddr::V4(net::Ipv4Addr::unspecified()),
+            device: String::from("")
         }
     }
 }
@@ -57,7 +59,7 @@ fn iproute(ip: net::IpAddr) -> Route {
         .stdout;
     let iproute = str::from_utf8(&iproute).unwrap();
 
-    let mut route = Route::default();
+    let mut route = Route::unspecified();
 
     let caps = re_dst.captures(&iproute)
         .expect("bad `ip route` output: no dst");
