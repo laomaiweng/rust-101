@@ -1,12 +1,17 @@
+#[macro_use] extern crate lazy_static;
 #[macro_use] extern crate log;
 extern crate pretty_env_logger;
+extern crate regex;
 
 use std::io;
 
 fn main() {
     pretty_env_logger::init();
 
-    let mut nonascii: Vec<char> = vec![];
+    //let pig_latin = pig_latin_cbc;
+    let pig_latin = pig_latin_re;
+
+    let mut isascii = true;
 
     loop {
         let mut line = String::new();
@@ -16,20 +21,18 @@ fn main() {
             break;
         }
 
-        let (output, line_nonascii) = pig_latin(&line);
-        print!("{}", &output);
-        nonascii.extend(line_nonascii);
+        print!("{}", pig_latin(&line));
+        isascii &= line.is_ascii();
     }
 
-    if !nonascii.is_empty() {
-        warn!("Non-ascii characters in text: {}", nonascii.iter().collect::<String>());
+    if !isascii {
+        warn!("Non-ascii characters found in text! Translation may not be accurate.");
     }
 }
 
-fn pig_latin(text: &str) -> (String, Vec<char>) {
+fn pig_latin_cbc(text: &str) -> String {
     // output
     let mut output = String::new();
-    let mut nonascii: Vec<char> = vec![];
 
     // word state
     let mut elision: Option<char> = None;
@@ -43,13 +46,6 @@ fn pig_latin(text: &str) -> (String, Vec<char>) {
     loop {
         // get the next char
         let c = chars.next();
-
-        // log non-ascii chars
-        if let Some(ch) = c {
-            if !ch.is_ascii() {
-                nonascii.push(ch);
-            }
-        }
 
         // word boundaries: EOF/whitespace/punctuation (except dash)
         if c.is_none() || c.unwrap().is_whitespace() || (c.unwrap().is_ascii_punctuation() && c.unwrap() != '-') {
@@ -114,5 +110,40 @@ fn pig_latin(text: &str) -> (String, Vec<char>) {
         }
     }
 
-    (output, nonascii)
+    output
+}
+
+enum WordType {
+    VowelStarting,
+    ConsonantStarting,
+    Other
+}
+
+fn pig_latin_re(text: &str) -> String {
+    lazy_static! {
+        static ref RE_WORD: regex::Regex = regex::Regex::new(r"\b\w{2,}\b(?:-\w+\b)*").unwrap();    // capture words, not counting a single dash as a word separator
+    }
+
+    let text = RE_WORD.replace_all(&text, |caps: &regex::Captures| {
+        let mut chars = caps[0].chars();
+        let first_letter = chars.next().unwrap();   // guaranteed by regex
+        let word_type = match first_letter.to_ascii_lowercase() {
+            'a' | 'e' | 'i' | 'o' | 'u' | 'y' => WordType::VowelStarting,
+            'a'...'z' => WordType::ConsonantStarting,
+            _ => WordType::Other,
+        };
+        let second_letter = chars.next().unwrap();  // guaranteed by regex
+        let second_letter = match word_type {
+            WordType::ConsonantStarting if first_letter.is_uppercase() => second_letter.to_uppercase().collect(),
+            _ => second_letter.to_string(),
+        };
+        let other_letters: String = chars.collect();
+        match word_type {
+            WordType::VowelStarting => format!("{}{}{}-hay", first_letter, second_letter, other_letters),
+            WordType::ConsonantStarting => format!("{}{}-{}ay", second_letter, other_letters, first_letter.to_lowercase()),
+            _ => format!("{}{}{}", first_letter, second_letter, other_letters),
+        }
+    });
+
+    String::from(text)
 }
