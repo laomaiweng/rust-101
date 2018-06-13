@@ -59,7 +59,7 @@ fn hashmaps() {
 
     let other_teams = vec!["Green", "Red", "NOTUSED"];
     let mut other_initial_scores = vec![30, 60];
-    let other_scores: HashMap<_, _> = other_teams.iter().map(|s| s.to_string()).zip(other_initial_scores.iter().map(|v| v.clone())).collect();  // must .to_string() because scores uses String::from(); must .clone() because otherwise we get references to the integers in other_initial_scores and keep the borrow active
+    let other_scores: HashMap<_, _> = other_teams.iter().map(|s| s.to_string()).zip(other_initial_scores.iter().cloned()).collect();  // must .to_string() because scores uses String::from(); must .cloned() because otherwise we get references to the integers in other_initial_scores and keep the borrow active
     other_initial_scores[0] = 99;
     println!("{:?}", other_scores);
 
