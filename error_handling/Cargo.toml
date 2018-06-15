@@ -1,0 +1,9 @@
+[package]
+name = "error_handling"
+version = "0.1.0"
+authors = ["quentin <quentin@minster.io>"]
+
+[dependencies]
+
+[profile.release]
+panic = 'abort'
