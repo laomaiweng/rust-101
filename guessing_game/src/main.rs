@@ -4,6 +4,32 @@ use std::io;
 use std::cmp::Ordering;
 use rand::Rng;
 
+struct Guess {
+    value: u32
+}
+
+impl Guess {
+    fn new(value: u32) -> Result<Self, &'static str> {
+        if value < 0 || 100 < value {
+            return Err("must be between 0 and 100");
+        }
+
+        Ok(Guess { value })
+    }
+
+    fn from(value: &str) -> Result<Self, &str> {
+        if let Ok(value) = value.trim().parse::<i32>() {
+            Ok(Guess::new(value as u32)?)
+        } else {
+            Err("not a number")
+        }
+    }
+
+    fn value(&self) -> u32 {
+        self.value
+    }
+}
+
 fn main() {
     println!("Guess the number!");
 
@@ -18,8 +44,8 @@ fn main() {
         io::stdin().read_line(&mut guess)
             .expect("Failed to read line");
 
-        let guess: u32 = match guess.trim().parse() {
-            Ok(num) => num,
+        let guess = match Guess::from(&guess) {
+            Ok(guess) => guess.value(),
             Err(err) => {
                 println!("Bad value: {}", err);
                 continue;
