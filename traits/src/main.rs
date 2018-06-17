@@ -18,13 +18,15 @@ fn main() {
         content: String::from("The Pittsburgh Penguins once again are the best hockey team in the NHL."),
     };
 
-    println!("1 new article: {}", article.summarize());
+    traits::notify(&article);
+    println!("1 new blog post: {}", article.summarize());
 
-    let blog_post = BlogPost {
+    let post = BlogPost {
         title: String::from("How to deal with the crazies?"),
         author: String::from("defakator"),
         content: String::from("use your better judgement"),
     };
 
-    println!("1 new blog post: {}", blog_post.summarize());
+    traits::notify_author(&post);
+    println!("1 new blog post: {}", post.summarize());
 }

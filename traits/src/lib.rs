@@ -57,3 +57,13 @@ impl Summary for BlogPost {
         format!("{}", self.author)
     }
 }
+
+pub fn notify<T: Summary>(item: &T) {
+    println!("Breaking news! {}", item.summarize());
+}
+
+pub fn notify_author<T>(item: &T)
+    where T: Summary
+{
+    println!("Hot from {}! {}", item.summarize_author(), item.summarize());
+}
