@@ -58,6 +58,16 @@ impl Summary for BlogPost {
     }
 }
 
+impl<T: ToString> Summary for T {
+    fn summarize_author(&self) -> String {
+        String::new()
+    }
+
+    fn summarize(&self) -> String {
+        self.to_string().chars().take(42).collect()
+    }
+}
+
 pub fn notify<T: Summary>(item: &T) {
     println!("Breaking news! {}", item.summarize());
 }

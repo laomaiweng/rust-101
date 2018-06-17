@@ -29,4 +29,7 @@ fn main() {
 
     traits::notify_author(&post);
     println!("1 new blog post: {}", post.summarize());
+
+    let int = 0xdeadc0deu32;
+    println!("1 new int: {}", int.summarize());
 }
