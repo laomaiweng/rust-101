@@ -1,3 +1,5 @@
+use std::{thread, time};
+
 struct Rectangle {
     length: u32,
     width: u32,
@@ -45,6 +47,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn panic() {
         panic!("Failed panicking test!");
     }
@@ -77,6 +80,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore]
     fn greeting_contains_name() {
         let result = greeting("Carol");
         assert!(
@@ -87,7 +91,19 @@ mod tests {
 
     #[test]
     #[should_panic(expected = "Guess value must be less than or equal to 100")]
+    #[ignore]
     fn greater_than_100() {
         Guess::new(200);
+    }
+
+    #[test]
+    #[ignore]
+    fn sleepy_head() {
+        let three_secs = time::Duration::from_millis(3000);
+        let now = time::Instant::now();
+
+        thread::sleep(three_secs);
+
+        assert!(now.elapsed() >= three_secs);
     }
 }
