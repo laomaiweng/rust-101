@@ -3,23 +3,33 @@ use std::error::Error;
 use std::fs::File;
 use std::io::prelude::*;
 
-pub struct Config<'a> {
-    pub query: &'a str,
-    pub filename: &'a str,
+pub struct Config {
+    pub query: String,
+    pub filename: String,
     pub case_sensitive: bool,
 }
 
-impl<'a> Config<'a> {
-    pub fn new(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("not enough arguments");
-        } else if args.len() > 3 {
+impl Config {
+    pub fn new(mut args: env::Args) -> Result<Config, &'static str> {
+        args.next();    // skip program name
+
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("didn't get a query string"),
+        };
+        let filename = match args.next() {
+            Some(arg) => arg,
+            None => return Err("didn't get a file name"),
+        };
+
+        if args.next().is_some() {
             return Err("too many arguments");
         }
+
         Ok(
             Config {
-                query: &args[1],
-                filename: &args[2],
+                query,
+                filename,
                 case_sensitive: env::var("CASE_INSENSITIVE").is_err(),
             }
         )
@@ -33,9 +43,9 @@ pub fn run(config: Config) -> Result<(), Box<Error>> {
     f.read_to_string(&mut contents)?;
 
     let matches = if config.case_sensitive {
-        search(config.query, &contents)
+        search(&config.query, &contents)
     } else {
-        search_case_insensitive(config.query, &contents)
+        search_case_insensitive(&config.query, &contents)
     };
 
     for m in matches {
@@ -46,28 +56,13 @@ pub fn run(config: Config) -> Result<(), Box<Error>> {
 }
 
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut matches = Vec::new();
-
-    for line in contents.lines() {
-        if line.contains(query) {
-            matches.push(line);
-        }
-    }
-
-    matches
+    contents.lines().filter(|line| line.contains(query)).collect()
 }
 
 pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     let query = query.to_lowercase();
-    let mut matches = Vec::new();
 
-    for line in contents.lines() {
-        if line.to_lowercase().contains(&query) {
-            matches.push(line);
-        }
-    }
-
-    matches
+    contents.lines().filter(|line| line.to_lowercase().contains(&query)).collect()
 }
 
 #[cfg(test)]
