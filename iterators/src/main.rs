@@ -1,3 +1,7 @@
+extern crate rand;
+
+use rand::prelude::*;
+
 struct Counter {
     count: u32
 }
@@ -30,6 +34,30 @@ struct Shoe {
 
 fn shoes_in_my_size(shoes: Vec<Shoe>, shoe_size: u32) -> Vec<Shoe> {
     shoes.into_iter().filter(|s| s.size == shoe_size).collect()
+}
+
+fn audio_shit() {
+    let mut buffer = [0i32; 36];
+    rand::thread_rng().fill(&mut buffer[..]);
+    let coefficients = [1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 7];
+    let qlp_shift =  4i16;
+
+    println!("audio in:  [{}]", buffer.iter().map(|v| v.to_string()).collect::<Vec<String>>().join(", "));
+
+    audio_transform(&mut buffer, coefficients, qlp_shift);
+
+    println!("audio out: [{}]", buffer.iter().map(|v| v.to_string()).collect::<Vec<String>>().join(", "));
+}
+
+fn audio_transform(buffer: &mut [i32], coefficients: [i64; 12], qlp_shift: i16) {
+    for i in 12..buffer.len() {
+        let prediction = coefficients.iter()
+                                     .zip(&buffer[i - 12..i])
+                                     .map(|(&c, &s)| c * s as i64)
+                                     .sum::<i64>() >> qlp_shift;
+        let delta = buffer[i];
+        buffer[i] = prediction as i32 + delta;
+    }
 }
 
 fn main() {
@@ -75,4 +103,6 @@ fn main() {
 
     let res: u32 = Counter::new().skip(1).zip(Counter::new()).map(|(a,b)| a*b).filter(|x| x % 3 == 0).sum();
     println!("convoluted: {}", res);
+
+    audio_shit();
 }
