@@ -1,5 +1,3 @@
-#![feature(ip_constructors)]
-
 extern crate regex;
 
 use std::env;
@@ -30,8 +28,8 @@ impl Route {
     fn unspecified() -> Route {
         Route {
             local: false,
-            dst: net::IpAddr::V4(net::Ipv4Addr::unspecified()),
-            src: net::IpAddr::V4(net::Ipv4Addr::unspecified()),
+            dst: net::IpAddr::V4(net::Ipv4Addr::UNSPECIFIED),
+            src: net::IpAddr::V4(net::Ipv4Addr::UNSPECIFIED),
             device: String::from("")
         }
     }
