@@ -19,7 +19,11 @@ pub fn pig_latin(text: &str) -> String {
         // TODO: this doesn't handle multiple dashes the same way the regex implementation does
         if c.is_none() || c.unwrap().is_whitespace() || (c.unwrap().is_ascii_punctuation() && c.unwrap() != '-') {
             // if word too short, don't transform it, and restore its first character
-            if word.len() < 2 {
+            let elision_len = match elision {
+                Some(_) => 1,
+                None => 0,
+            };
+            if word.len() + elision_len < 2 {   // use word.len() only gives us the character count if input is ASCII
                 if !suffix.is_empty() {
                     suffix.clear();
                     if let Some(ch) = elision {
@@ -62,7 +66,7 @@ pub fn pig_latin(text: &str) -> String {
                     }
                     word.push_str(&ch);
                 },
-                'a'...'z' => {
+                'a'..='z' => {
                     if suffix.is_empty() {
                         // setup consonant suffix (char moved => must update case)
                         suffix = format!("-{}ay", c.to_lowercase());

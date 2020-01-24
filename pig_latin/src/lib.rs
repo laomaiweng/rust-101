@@ -20,7 +20,7 @@ pub fn pig_latin(text: &str) -> String {
         let first_letter = chars.next().unwrap();   // guaranteed by regex
         let word_type = match first_letter.to_ascii_lowercase() {
             'a' | 'e' | 'i' | 'o' | 'u' | 'y' => WordType::VowelStarting,
-            'a'...'z' => WordType::ConsonantStarting,
+            'a'..='z' => WordType::ConsonantStarting,
             _ => WordType::Other,
         };
         let second_letter = chars.next().unwrap();  // guaranteed by regex
