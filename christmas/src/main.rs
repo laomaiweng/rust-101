@@ -19,7 +19,7 @@ fn main() {
     assert!(numbers.len() == 12);
     assert!(presents.len() == 12);
 
-    for d in 0..12 {
+    for d in 0..days.len() {
         println!("On the {} day of Christmas my true love sent to me", days[d]);
         for dd in (0..d+1).rev() {
             if dd != 0 {
