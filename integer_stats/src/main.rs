@@ -33,13 +33,13 @@ fn mode(ints: &Vec<i128>) -> Vec<i128> {
     let mut ints = ints.clone();
     ints.sort();
 
-    let mut count: HashMap<i128, u128> = HashMap::new();
+    let mut count: HashMap<i128, usize> = HashMap::new();
     for i in &ints {
         *count.entry(*i).or_insert(0) += 1;
     }
 
-    let mut rcount: HashMap<u128, Vec<i128>> = HashMap::new();
-    let mut max: u128 = 0;
+    let mut rcount: HashMap<usize, Vec<i128>> = HashMap::new();
+    let mut max: usize = 0;
     for (i, c) in &count {
         rcount.entry(*c).or_insert(Vec::new()).push(*i);
         if *c > max {
