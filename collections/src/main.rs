@@ -38,7 +38,7 @@ fn strings() {
     println!("{}", ss.iter().map(|ref e| format!("{}", e.len())).collect::<Vec<String>>().join("-"));
 
     println!("");
-    println!("{}", &s[0..4]);
+    println!("{}", &s[0..4]);   // indices must be at char boundaries! otherwise, panic
 
     println!("");
     for c in ss[3].chars() {
