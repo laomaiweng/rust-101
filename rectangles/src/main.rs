@@ -85,6 +85,7 @@ fn main_struct() {
     let rect4 = RectangleS { width: 70, height: 20 };
     let square = RectangleS::square(40);
 
+    println!("rect1 is {:?}", rect1);
     println!("rect1 is {:#?}", rect1);
 
     println!(
